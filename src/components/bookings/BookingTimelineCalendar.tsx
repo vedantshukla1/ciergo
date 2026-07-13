@@ -103,7 +103,7 @@ export const BookingTimelineCalendar = () => {
                   {hour}
                 </div>
                 {/* Day Cells */}
-                {DAYS.map((d, dIdx) => {
+                {DAYS.map((_, dIdx) => {
                   const event = MOCK_EVENTS.find(e => e.day === dIdx && e.hour === hIdx);
                   return (
                     <div key={dIdx} className="border-r border-b border-gray-100 last:border-r-0 relative p-2 transition-colors hover:bg-gray-50/30">

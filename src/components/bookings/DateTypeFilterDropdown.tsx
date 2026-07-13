@@ -1,7 +1,7 @@
-import { useState, useRef, useEffect, ReactNode } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import type { ReactNode } from 'react';
 import { Filter, RotateCcw, Check, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useBookings } from '@/hooks/useBookings';
 
 const PRESETS = [
   'Today',

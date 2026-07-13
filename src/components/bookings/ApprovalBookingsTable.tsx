@@ -1,12 +1,10 @@
 import { useState, useEffect } from 'react';
-import { ChevronDown, ClipboardList, Plus, IndianRupee, ArrowRightLeft, ArrowUpDown } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { ChevronDown, ClipboardList, Plus, IndianRupee, ArrowRightLeft, ArrowUpDown, X, Check } from 'lucide-react';
 import { AvatarStack } from './AvatarStack';
 import { PaymentStatusBadge, ServiceStatusBadge } from './StatusBadge';
 import { VoucherButton } from './VoucherButton';
 import { RowActionsDropdown } from './RowActionsDropdown';
 import { ConfirmationModal } from './ConfirmationModal';
-import { DateTypeFilterDropdown } from './DateTypeFilterDropdown';
 import { ServiceFilterDropdown } from './ServiceFilterDropdown';
 import { TableHeaderDateDropdown } from './TableHeaderDateDropdown';
 

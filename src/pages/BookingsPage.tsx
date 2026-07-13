@@ -43,7 +43,7 @@ export const BookingsPage = () => {
   ];
 
   if (isCalendarView) {
-    breadcrumbs.push({ label: 'Booking Calendar' });
+    breadcrumbs.push({ label: 'Booking Calendar', href: undefined });
   }
 
   return (

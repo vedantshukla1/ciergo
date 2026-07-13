@@ -2,16 +2,17 @@ import { useState, useRef, useEffect } from 'react';
 import { Filter, RotateCcw, Check, Plane, Building2, Bus, Ticket, Activity, CreditCard, Shield, LayoutGrid } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useBookings } from '@/hooks/useBookings';
+import type { ServiceType } from '@/types/booking.types';
 
-const SERVICES_LIST = [
-  { id: 'Flight', label: 'Flight', icon: Plane },
-  { id: 'Accommodation', label: 'Accommodation', icon: Building2 },
-  { id: 'Transportation', label: 'Transportation (Land)', icon: Bus },
-  { id: 'Ticket', label: 'Ticket (Attraction)', icon: Ticket },
-  { id: 'Activity', label: 'Activity', icon: Activity },
-  { id: 'Visa', label: 'Visa', icon: CreditCard },
-  { id: 'Insurance', label: 'Travel Insurance', icon: Shield },
-  { id: 'Others', label: 'Others', icon: LayoutGrid },
+const SERVICES_LIST: { id: ServiceType; label: string; icon: any }[] = [
+  { id: 'flight', label: 'Flight', icon: Plane },
+  { id: 'accommodation', label: 'Accommodation', icon: Building2 },
+  { id: 'transportationLand', label: 'Transportation (Land)', icon: Bus },
+  { id: 'ticketAttraction', label: 'Ticket (Attraction)', icon: Ticket },
+  { id: 'activity', label: 'Activity', icon: Activity },
+  { id: 'visa', label: 'Visa', icon: CreditCard },
+  { id: 'travelInsurance', label: 'Travel Insurance', icon: Shield },
+  { id: 'others', label: 'Others', icon: LayoutGrid },
 ];
 
 export const ServiceFilterDropdown = () => {
@@ -29,7 +30,7 @@ export const ServiceFilterDropdown = () => {
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
-  const toggleService = (id: string) => {
+  const toggleService = (id: ServiceType) => {
     setFilters({
       ...filters,
       serviceFilter: {

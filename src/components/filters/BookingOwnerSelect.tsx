@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
-import { ChevronDown, X, RotateCcw, Search, Check } from 'lucide-react';
+import { ChevronDown, X, RotateCcw, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { MOCK_OWNERS } from '@/data/mockOwners';
 import type { OwnerFilter, AdvancedOwnerFilter } from '@/types/filter.types';
@@ -39,10 +39,6 @@ export const BookingOwnerSelect = ({
   const totalSelected = isAdvancedMode
     ? advanced.primaryOwners.length + advanced.secondaryOwners.length
     : selected.length;
-
-  const label = totalSelected === 0
-    ? 'Booking Owner'
-    : `${totalSelected} Owner(s) Selected`;
 
   return (
     <div className="relative" ref={ref}>
@@ -451,7 +447,10 @@ const OwnerOption = ({
   checked: boolean;
   onChange: () => void;
 }) => (
-  <label className="flex items-center gap-3 px-4 py-2.5 cursor-pointer hover:bg-gray-50 transition-colors border-b border-gray-50 last:border-0">
+  <label 
+    onClick={onChange}
+    className="flex items-center gap-3 px-4 py-2.5 cursor-pointer hover:bg-gray-50 transition-colors border-b border-gray-50 last:border-0"
+  >
     <div className={cn(
       "w-4 h-4 rounded border flex items-center justify-center transition-colors",
       checked ? "bg-primary-700 border-primary-700" : "bg-white border-gray-300"

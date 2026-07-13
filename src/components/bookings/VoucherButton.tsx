@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { FileText, ChevronDown, ExternalLink, Receipt } from 'lucide-react';
+import { ChevronDown, Receipt } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { VoucherInfo } from '@/types/booking.types';
 
@@ -8,7 +8,7 @@ interface VoucherButtonProps {
   bookingId: string;
 }
 
-export const VoucherButton = ({ vouchers, bookingId }: VoucherButtonProps) => {
+export const VoucherButton = ({ vouchers }: VoucherButtonProps) => {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 

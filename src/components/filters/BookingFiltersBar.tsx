@@ -1,6 +1,6 @@
-import { ChevronDown, Calendar as CalendarIcon, ArrowRight, Search, RefreshCw } from 'lucide-react';
+import { Calendar as CalendarIcon, ArrowRight, Search, RefreshCw } from 'lucide-react';
 import { useState } from 'react';
-import type { BookingFilters, OwnerFilter, AdvancedOwnerFilter } from '@/types/filter.types';
+import type { BookingFilters, AdvancedOwnerFilter } from '@/types/filter.types';
 import { DateTypeFilterDropdown } from '@/components/bookings/DateTypeFilterDropdown';
 import { BookingTypeDropdown } from './BookingTypeDropdown';
 import { BookingOwnerSelect } from './BookingOwnerSelect';
@@ -87,7 +87,10 @@ export const BookingFiltersBar = ({
             />
             <Search className="absolute right-5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-gray-400" />
           </div>
-          <button className="flex items-center justify-center w-[42px] h-[42px] bg-white border border-gray-200 rounded-[14px] text-gray-500 hover:bg-gray-50 shadow-sm shrink-0">
+          <button 
+            onClick={onReset}
+            className="flex items-center justify-center w-[42px] h-[42px] bg-white border border-gray-200 rounded-[14px] text-gray-500 hover:bg-gray-50 shadow-sm shrink-0"
+          >
             <RefreshCw className="w-[18px] h-[18px]" />
           </button>
         </div>
