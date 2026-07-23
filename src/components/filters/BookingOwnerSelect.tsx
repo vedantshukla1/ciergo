@@ -45,7 +45,7 @@ export const BookingOwnerSelect = ({
       <label className="text-[12px] font-semibold text-gray-700 mb-1.5 block">Booking Owner</label>
       <div
         onClick={() => setOpen((p) => !p)}
-        className="flex items-center justify-between w-[220px] px-4 py-2 bg-white border border-gray-200 rounded-[14px] cursor-pointer hover:border-gray-300 transition-colors"
+        className="flex items-center justify-between w-[220px] px-4 h-[42px] bg-white border border-gray-200 rounded-[14px] cursor-pointer hover:border-gray-300 transition-colors"
       >
         <span className={`text-[13px] truncate ${totalSelected > 0 ? 'text-gray-700 font-medium' : 'text-gray-400'}`}>
           {totalSelected > 0 ? `${totalSelected} Owner(s) Selected` : 'Search / Select Owners'}

@@ -49,25 +49,25 @@ const BaseBadge = ({
 );
 
 export const PaymentStatusBadge = ({ status, className, paymentInfo }: PaymentStatusBadgeProps) => {
-  const config = PAYMENT_STATUS_CONFIG[status];
+  const config = PAYMENT_STATUS_CONFIG[status] || { label: status, className: 'bg-gray-100 text-gray-800' };
   
-  if (status === 'pending' && paymentInfo) {
+  if (paymentInfo) {
     return (
       <div className="relative group inline-block cursor-pointer">
         <BaseBadge label={config.label} className={cn(config.className, className)} />
         
-        {/* Pending Amount Tooltip */}
+        {/* Payment Amount Tooltip */}
         <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-5 py-4 bg-[#2A2B2E] text-white text-[13px] rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-[100] whitespace-nowrap min-w-[220px] flex flex-col gap-3">
           <div className="text-center font-semibold tracking-wider text-gray-100 uppercase underline underline-offset-4 decoration-gray-400 pb-1">
-            PENDING AMOUNT
+            PAYMENT SUMMARY
           </div>
           <div className="flex justify-between items-center font-medium mt-1">
-            <span className="text-gray-200 tracking-wide uppercase">CUSTOMER :</span>
-            <span>₹{paymentInfo.customerAmount.toLocaleString('en-IN')}</span>
+            <span className="text-gray-200 tracking-wide uppercase">PAID :</span>
+            <span className="text-green-400">₹{paymentInfo.customerAmount.toLocaleString('en-IN')}</span>
           </div>
           <div className="flex justify-between items-center font-medium">
-            <span className="text-gray-200 tracking-wide uppercase">VENDOR :</span>
-            <span>₹{paymentInfo.vendorAmount.toLocaleString('en-IN')}</span>
+            <span className="text-gray-200 tracking-wide uppercase">PENDING :</span>
+            <span className="text-orange-400">₹{paymentInfo.vendorAmount.toLocaleString('en-IN')}</span>
           </div>
         </div>
       </div>

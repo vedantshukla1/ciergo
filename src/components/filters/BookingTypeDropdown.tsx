@@ -3,14 +3,18 @@ import { ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const OPTIONS = [
-  'All Bookings',
-  'Other Services',
-  'Limitless'
+  { label: 'All Bookings', value: 'all' },
+  { label: 'Other Services', value: 'other' },
+  { label: 'Limitless', value: 'limitless' },
 ];
 
-export const BookingTypeDropdown = () => {
+interface BookingTypeDropdownProps {
+  value?: string;
+  onChange?: (val: string) => void;
+}
+
+export const BookingTypeDropdown = ({ value = 'all', onChange }: BookingTypeDropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selected, setSelected] = useState('All Bookings');
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -21,31 +25,35 @@ export const BookingTypeDropdown = () => {
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
+  const selectedOption = OPTIONS.find(o => o.value === value.toLowerCase()) || OPTIONS[0];
+
   return (
     <div className="relative inline-flex items-center w-full" ref={ref}>
       <div 
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-between w-[180px] px-4 py-2 bg-white border border-gray-200 rounded-[14px] cursor-pointer hover:border-gray-300 transition-colors"
+        className="flex items-center justify-between w-[200px] px-4 h-[42px] bg-white border border-gray-200 rounded-[14px] cursor-pointer hover:border-gray-300 transition-colors shadow-sm"
       >
-        <span className="text-[13px] text-gray-700 font-medium">{selected}</span>
+        <span className="text-[14px] text-gray-800 font-medium">{selectedOption.label}</span>
         <ChevronDown className={cn("w-4 h-4 text-gray-400 transition-transform", isOpen && "rotate-180")} />
       </div>
 
       {isOpen && (
-        <div className="absolute top-full left-0 mt-2 w-[180px] bg-white border border-gray-100 rounded-xl shadow-lg z-50 overflow-hidden flex flex-col font-medium py-1">
+        <div className="absolute top-full right-0 mt-2 w-[200px] bg-white border border-gray-100 rounded-2xl shadow-xl z-50 overflow-hidden flex flex-col font-medium py-2">
           {OPTIONS.map(option => (
             <button
-              key={option}
+              key={option.value}
               onClick={() => {
-                setSelected(option);
+                onChange?.(option.value);
                 setIsOpen(false);
               }}
               className={cn(
-                "px-4 py-2.5 text-left text-[13px] hover:bg-gray-50 transition-colors w-full border-b border-gray-50 last:border-b-0",
-                selected === option ? "text-[#6C2BD9]" : "text-gray-700"
+                "px-5 py-3 text-left text-[14px] hover:bg-gray-50 transition-colors w-full",
+                selectedOption.value === option.value 
+                  ? "text-[#6C2BD9] font-bold" 
+                  : "text-gray-700 font-medium"
               )}
             >
-              {option}
+              {option.label}
             </button>
           ))}
         </div>

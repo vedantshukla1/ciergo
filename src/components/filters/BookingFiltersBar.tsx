@@ -16,8 +16,21 @@ export const BookingFiltersBar = ({
   onFiltersChange,
   onReset,
 }: BookingFiltersBarProps) => {
-  const [isAdvancedMode, setIsAdvancedMode] = useState(false);
-  const [advancedOwners, setAdvancedOwners] = useState<AdvancedOwnerFilter>({ primaryOwners: [], secondaryOwners: [] });
+  const [isAdvancedMode, setIsAdvancedMode] = useState(filters.isAdvancedOwnerMode || false);
+  const [advancedOwners, setAdvancedOwners] = useState<AdvancedOwnerFilter>(filters.advancedOwner || { primaryOwners: [], secondaryOwners: [] });
+
+  const formatDateLabel = (from?: Date, to?: Date) => {
+    if (!from && !to) return null;
+    if (from && to) {
+      return `${from.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })} - ${to.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })}`;
+    }
+    if (from) return `>= ${from.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })}`;
+    if (to) return `<= ${to.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })}`;
+    return null;
+  };
+
+  const bookingDateLabel = formatDateLabel(filters.bookingDate?.from, filters.bookingDate?.to);
+  const travelDateLabel = formatDateLabel(filters.travelDate?.from, filters.travelDate?.to);
 
   return (
     <div className="px-6 py-5">
@@ -28,11 +41,17 @@ export const BookingFiltersBar = ({
           {/* Booking Date */}
           <div className="flex flex-col gap-1.5">
             <label className="text-[12px] font-semibold text-gray-700">Booking Date</label>
-            <DateTypeFilterDropdown hideTypeSelector>
-              <div className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-[14px] cursor-pointer hover:border-gray-300 transition-colors">
-                <span className="text-[13px] text-gray-400">Start Date</span>
-                <ArrowRight className="w-3.5 h-3.5 text-gray-400" />
-                <span className="text-[13px] text-gray-400">End Date</span>
+            <DateTypeFilterDropdown 
+              hideTypeSelector
+              value={filters.bookingDate}
+              onChange={(range) => onFiltersChange({ ...filters, bookingDate: range })}
+            >
+              <div className="flex items-center gap-2 px-4 h-[42px] bg-white border border-gray-200 rounded-[14px] cursor-pointer hover:border-gray-300 transition-colors shadow-sm">
+                <span className={`text-[13px] ${bookingDateLabel ? 'text-[#6C2BD9] font-medium' : 'text-gray-400'}`}>
+                  {bookingDateLabel || 'Start Date'}
+                </span>
+                {!bookingDateLabel && <ArrowRight className="w-3.5 h-3.5 text-gray-400" />}
+                {!bookingDateLabel && <span className="text-[13px] text-gray-400">End Date</span>}
                 <CalendarIcon className="w-4 h-4 text-gray-400 ml-2" />
               </div>
             </DateTypeFilterDropdown>
@@ -41,11 +60,17 @@ export const BookingFiltersBar = ({
           {/* Travel Date */}
           <div className="flex flex-col gap-1.5">
             <label className="text-[12px] font-semibold text-gray-700">Travel Date</label>
-            <DateTypeFilterDropdown hideTypeSelector>
-              <div className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-[14px] cursor-pointer hover:border-gray-300 transition-colors">
-                <span className="text-[13px] text-gray-400">Start Date</span>
-                <ArrowRight className="w-3.5 h-3.5 text-gray-400" />
-                <span className="text-[13px] text-gray-400">End Date</span>
+            <DateTypeFilterDropdown 
+              hideTypeSelector
+              value={filters.travelDate}
+              onChange={(range) => onFiltersChange({ ...filters, travelDate: range })}
+            >
+              <div className="flex items-center gap-2 px-4 h-[42px] bg-white border border-gray-200 rounded-[14px] cursor-pointer hover:border-gray-300 transition-colors shadow-sm">
+                <span className={`text-[13px] ${travelDateLabel ? 'text-[#6C2BD9] font-medium' : 'text-gray-400'}`}>
+                  {travelDateLabel || 'Start Date'}
+                </span>
+                {!travelDateLabel && <ArrowRight className="w-3.5 h-3.5 text-gray-400" />}
+                {!travelDateLabel && <span className="text-[13px] text-gray-400">End Date</span>}
                 <CalendarIcon className="w-4 h-4 text-gray-400 ml-2" />
               </div>
             </DateTypeFilterDropdown>
@@ -58,12 +83,24 @@ export const BookingFiltersBar = ({
               advanced={advancedOwners}
               isAdvancedMode={isAdvancedMode}
               onChangeSelected={(bookingOwners) => onFiltersChange({ ...filters, bookingOwners })}
-              onChangeAdvanced={setAdvancedOwners}
-              onToggleAdvanced={setIsAdvancedMode}
+              onChangeAdvanced={(adv) => {
+                setAdvancedOwners(adv);
+                onFiltersChange({ ...filters, advancedOwner: adv, isAdvancedOwnerMode: isAdvancedMode });
+              }}
+              onToggleAdvanced={(val) => {
+                setIsAdvancedMode(val);
+                onFiltersChange({ ...filters, isAdvancedOwnerMode: val });
+              }}
               onApply={() => {}}
               onReset={() => {
-                onFiltersChange({ ...filters, bookingOwners: [] });
+                onFiltersChange({
+                  ...filters,
+                  bookingOwners: [],
+                  advancedOwner: { primaryOwners: [], secondaryOwners: [] },
+                  isAdvancedOwnerMode: false,
+                });
                 setAdvancedOwners({ primaryOwners: [], secondaryOwners: [] });
+                setIsAdvancedMode(false);
               }}
             />
           </div>
@@ -71,7 +108,10 @@ export const BookingFiltersBar = ({
           {/* Booking Type */}
           <div className="flex flex-col gap-1.5">
             <label className="text-[12px] font-semibold text-gray-700">Booking Type</label>
-            <BookingTypeDropdown />
+            <BookingTypeDropdown 
+              value={filters.bookingType || 'all'}
+              onChange={(val) => onFiltersChange({ ...filters, bookingType: val as any })}
+            />
           </div>
         </div>
 
@@ -82,14 +122,15 @@ export const BookingFiltersBar = ({
               type="text"
               value={filters.search || ''}
               onChange={(e) => onFiltersChange({ ...filters, search: e.target.value })}
-              placeholder="Search by ID / Lead Pax / Amount"
-              className="w-full pl-5 pr-12 py-2.5 bg-white border border-gray-200 rounded-[14px] text-[14px] text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#6C2BD9] placeholder:text-gray-400"
+              placeholder="Search by ID / Lead Pax / Amount / Owner"
+              className="w-full pl-5 pr-12 h-[42px] bg-white border border-gray-200 rounded-[14px] text-[14px] text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#6C2BD9] placeholder:text-gray-400 shadow-sm"
             />
             <Search className="absolute right-5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-gray-400" />
           </div>
           <button 
             onClick={onReset}
             className="flex items-center justify-center w-[42px] h-[42px] bg-white border border-gray-200 rounded-[14px] text-gray-500 hover:bg-gray-50 shadow-sm shrink-0"
+            title="Reset Filters"
           >
             <RefreshCw className="w-[18px] h-[18px]" />
           </button>

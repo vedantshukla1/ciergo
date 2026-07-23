@@ -90,7 +90,7 @@ export const BookingTable = () => {
                     <span className="text-[13px] font-bold text-gray-900">₹ {row.amount}</span>
                   </td>
                   <td className="px-4 py-4 text-center">
-                    <AvatarStack owners={EXACT_OWNERS} max={4} />
+                    <AvatarStack owners={(row as any).owners || [{ id: 'default', name: 'Unassigned', initials: 'UA', color: '#9CA3AF' }]} max={4} />
                   </td>
                   <td className="px-4 py-4 text-center">
                     <VoucherButton vouchers={{ count: 1, items: [] }} bookingId={row.bookingId} />

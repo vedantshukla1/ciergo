@@ -102,9 +102,9 @@ export const MOCK_BOOKINGS: Booking[] = Array.from({ length: 120 }, (_, i) => {
 });
 
 export const getSummaryData = (bookings: Booking[]) => {
-  const active = bookings.filter((b) => !b.isDeleted);
-  const net = active.reduce((sum, b) => sum + b.amount, 0);
-  const youGive = active.reduce((sum, b) => sum + b.paymentInfo.vendorAmount, 0);
-  const youGet = net - youGive;
+  const active = (bookings || []).filter((b) => b && !b.isDeleted);
+  const net = active.reduce((sum, b) => sum + (Number(b.amount) || 0), 0);
+  const youGive = active.reduce((sum, b) => sum + (Number(b.paymentInfo?.vendorAmount) || Math.floor((Number(b.amount) || 0) * 0.85)), 0);
+  const youGet = Math.max(0, net - youGive);
   return { net, youGive, youGet, currency: 'INR' };
 };

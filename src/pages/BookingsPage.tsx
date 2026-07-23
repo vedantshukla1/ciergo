@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { MainLayout } from '@/layouts/MainLayout';
 import { ActiveBookingsTable } from '@/components/bookings/ActiveBookingsTable';
 import { DeletedBookingsTable } from '@/components/bookings/DeletedBookingsTable';
@@ -10,10 +10,14 @@ import { useBookings } from '@/hooks/useBookings';
 import { Calendar } from 'lucide-react';
 import { TopActionsDropdown } from '@/components/bookings/TopActionsDropdown';
 import { BookingTimelineCalendar } from '@/components/bookings/BookingTimelineCalendar';
+import { getSummaryData } from '@/data/mockBookings';
 
 export const BookingsPage = () => {
   const {
+    bookings,
     filteredBookings,
+    isLoading,
+    error,
     activeTab,
     setActiveTab,
     approvalSubTab,
@@ -22,13 +26,13 @@ export const BookingsPage = () => {
     setFilters,
     resetFilters,
     counts,
+    approveBooking,
+    rejectBooking,
+    restoreBooking,
   } = useBookings();
 
-  const summaryData = {
-    net: 4870,
-    youGive: 70580,
-    youGet: 75450,
-  };
+  const activeBookings = useMemo(() => (bookings || []).filter((b) => !b?.isDeleted), [bookings]);
+  const summaryData = getSummaryData(activeBookings.length > 0 ? activeBookings : (filteredBookings || []));
 
   const [isSelectMode, setIsSelectMode] = useState(false);
   const [selectAllTrigger, setSelectAllTrigger] = useState(0);
@@ -63,6 +67,9 @@ export const BookingsPage = () => {
                 onSelectAll={() => {
                   setSelectAllTrigger(Date.now());
                 }}
+                onDeselectAll={() => {
+                  setClearSelectionTrigger(Date.now());
+                }}
               />
             )}
             <button 
@@ -85,41 +92,89 @@ export const BookingsPage = () => {
           />
         </div>
 
-        {isCalendarView ? (
-          <BookingTimelineCalendar />
-        ) : (
-          <div className="flex flex-col bg-white rounded-lg shadow-sm border border-gray-100 overflow-visible flex-1 w-full">
-            <BookingTabs
-              activeTab={activeTab}
-              onTabChange={setActiveTab}
-              approvalSubTab={approvalSubTab}
-              onApprovalSubTabChange={setApprovalSubTab}
-              counts={counts}
-              totalBookings={filteredBookings.length}
-            />
-
-            {activeTab === 'bookings' && (
-              <ActiveBookingsTable 
-                isSelectMode={isSelectMode} 
-                selectAllTrigger={selectAllTrigger} 
-                clearSelectionTrigger={clearSelectionTrigger} 
-                searchQuery={filters.search}
-              />
-            )}
-            {activeTab === 'deleted' && (
-              <DeletedBookingsTable 
-                searchQuery={filters.search}
-              />
-            )}
-            {activeTab === 'waitingForApproval' && (
-              <ApprovalBookingsTable 
-                isSelectMode={isSelectMode} 
-                selectAllTrigger={selectAllTrigger} 
-                clearSelectionTrigger={clearSelectionTrigger} 
-                searchQuery={filters.search}
-              />
-            )}
+        {/* Loading State */}
+        {isLoading && (
+          <div className="flex flex-col items-center justify-center py-20 bg-white rounded-lg shadow-sm border border-gray-100">
+            <div className="w-10 h-10 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin mb-4" />
+            <p className="text-[14px] font-medium text-gray-500">Loading bookings from server...</p>
           </div>
+        )}
+
+        {/* Error State */}
+        {!isLoading && error && (
+          <div className="flex flex-col items-center justify-center py-16 bg-white rounded-lg shadow-sm border border-red-100">
+            <div className="w-12 h-12 bg-red-50 rounded-full flex items-center justify-center mb-4">
+              <svg className="w-6 h-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            </div>
+            <p className="text-[15px] font-semibold text-gray-900 mb-1">Failed to load bookings</p>
+            <p className="text-[13px] text-gray-500 mb-4">{error}</p>
+            <button onClick={() => window.location.reload()} className="px-4 py-2 bg-purple-600 text-white text-[13px] font-semibold rounded-lg hover:bg-purple-700 transition-colors">
+              Retry
+            </button>
+          </div>
+        )}
+
+        {/* Main Content — only shown when not loading and no error */}
+        {!isLoading && !error && (
+          <>
+            {isCalendarView ? (
+              <BookingTimelineCalendar />
+            ) : (
+              <div className="flex flex-col bg-white rounded-lg shadow-sm border border-gray-100 overflow-visible flex-1 w-full">
+                <BookingTabs
+                  activeTab={activeTab}
+                  onTabChange={setActiveTab}
+                  approvalSubTab={approvalSubTab}
+                  onApprovalSubTabChange={setApprovalSubTab}
+                  counts={counts}
+                  totalBookings={(filteredBookings || []).length}
+                />
+
+                {/* Empty State */}
+                {(filteredBookings || []).length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-20">
+                    <div className="w-14 h-14 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+                      <svg className="w-7 h-7 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                    </div>
+                    <p className="text-[15px] font-semibold text-gray-700 mb-1">No bookings found</p>
+                    <p className="text-[13px] text-gray-400">
+                      {activeTab === 'deleted' ? 'No deleted bookings to display.' : activeTab === 'waitingForApproval' ? 'No bookings waiting for approval.' : 'Try adjusting your filters or create a new booking.'}
+                    </p>
+                  </div>
+                ) : (
+                  <>
+                    {activeTab === 'bookings' && (
+                      <ActiveBookingsTable 
+                        bookings={filteredBookings}
+                        isSelectMode={isSelectMode} 
+                        selectAllTrigger={selectAllTrigger} 
+                        clearSelectionTrigger={clearSelectionTrigger} 
+                        searchQuery={filters.search}
+                      />
+                    )}
+                    {activeTab === 'deleted' && (
+                      <DeletedBookingsTable 
+                        bookings={filteredBookings}
+                        onRestore={restoreBooking}
+                        searchQuery={filters.search}
+                      />
+                    )}
+                    {activeTab === 'waitingForApproval' && (
+                      <ApprovalBookingsTable 
+                        bookings={filteredBookings}
+                        onApprove={approveBooking}
+                        onReject={rejectBooking}
+                        isSelectMode={isSelectMode} 
+                        selectAllTrigger={selectAllTrigger} 
+                        clearSelectionTrigger={clearSelectionTrigger} 
+                        searchQuery={filters.search}
+                      />
+                    )}
+                  </>
+                )}
+              </div>
+            )}
+          </>
         )}
       </div>
     </MainLayout>
