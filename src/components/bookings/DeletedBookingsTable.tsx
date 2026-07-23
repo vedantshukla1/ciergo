@@ -1,12 +1,11 @@
 import { useState } from 'react';
-import { ChevronDown, ClipboardList, Plus, IndianRupee, ArrowRightLeft, ArrowUpDown, Plane, Building2, Bus, Ticket } from 'lucide-react';
+import { ChevronDown, ClipboardList, Plus, ArrowRightLeft, ArrowUpDown, Plane, Building2, Bus, Ticket } from 'lucide-react';
 import { AvatarStack } from './AvatarStack';
 import { PaymentStatusBadge, ServiceStatusBadge } from './StatusBadge';
 import { VoucherButton } from './VoucherButton';
 import { RowActionsDropdown } from './RowActionsDropdown';
 import { ServiceFilterDropdown } from './ServiceFilterDropdown';
 import { TableHeaderDateDropdown } from './TableHeaderDateDropdown';
-import { EXACT_OWNERS } from '@/data/bookingTableMockData';
 import { useBookings } from '@/hooks/useBookings';
 
 interface BookingTableProps {

@@ -3,7 +3,6 @@ import type { Booking } from '../types/booking.types';
 import type { BookingFilters } from '../types/filter.types';
 import { isDateInRange } from '../utils/dateUtils';
 import { fetchBookings, createBooking as apiCreateBooking, deleteBooking as apiDeleteBooking } from '../api/bookings';
-import { MOCK_BOOKINGS } from '../data/mockBookings';
 
 export type ActiveTab = 'bookings' | 'deleted' | 'waitingForApproval';
 export type ApprovalSubTab = 'all' | 'pending' | 'approved' | 'rejected';

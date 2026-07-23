@@ -5,7 +5,7 @@ import { PaymentStatusBadge, ServiceStatusBadge } from './StatusBadge';
 import { VoucherButton } from './VoucherButton';
 import { RowActionsDropdown } from './RowActionsDropdown';
 
-import { EXACT_OWNERS, BOOKINGS_ROWS as EXACT_ROWS } from '@/data/bookingTableMockData';
+import { BOOKINGS_ROWS as EXACT_ROWS } from '@/data/bookingTableMockData';
 
 export const BookingTable = () => {
   const [columnMode, setColumnMode] = useState<'billedTo' | 'leadPax'>('billedTo');

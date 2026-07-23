@@ -26,7 +26,7 @@ interface DateTypeFilterDropdownProps {
 
 export const DateTypeFilterDropdown = ({
   children,
-  value,
+  value: _value,
   onChange,
 }: DateTypeFilterDropdownProps = {}) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -88,7 +88,7 @@ export const DateTypeFilterDropdown = ({
     setIsOpen(false);
   };
 
-  const renderCalendarMonth = (monthName: string, startDayOffset: number, daysInMonth: number, prevMonthDays: number) => {
+  const renderCalendarMonth = (_monthName: string, startDayOffset: number, daysInMonth: number, prevMonthDays: number) => {
     const days = [];
     
     // Leading prev month days

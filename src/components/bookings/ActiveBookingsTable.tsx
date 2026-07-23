@@ -11,7 +11,6 @@ import { RecordPaymentSidesheet } from '../payments/RecordPaymentSidesheet';
 import { PaymentsListModal } from '../payments/PaymentsListModal';
 import { useBookings } from '../../hooks/useBookings';
 import { usePayments } from '../../hooks/usePayments';
-import { EXACT_OWNERS } from '@/data/bookingTableMockData';
 
 interface BookingTableProps {
   bookings?: any[];
